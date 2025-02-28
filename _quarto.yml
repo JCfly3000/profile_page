@@ -10,6 +10,7 @@ website:
         text: Home
       - about.qmd
       - about cn.qmd
+      
     right:
       - text: "中文"
         href: https://www.bing.com
