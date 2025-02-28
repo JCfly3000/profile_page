@@ -1,3 +1,3 @@
 profile page in english
 
-www.JCfly3000/profile_page
+https://jcfly3000.github.io/profile_page/

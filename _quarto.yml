@@ -12,15 +12,22 @@ website:
       - about cn.qmd
     right:
       - text: "中文"
-        href: www.bing.com
+        href: https://www.bing.com
 
+  page-footer:
+    right: "This blog is built with ❤️ and [Quarto](https://quarto.org/)."
+    
 format:
   html:
-    theme:
-      - cosmo
-      - brand
+    theme:   
+      light: cosmo
+      dark: darkly
     css: styles.css
-    toc: true
+    grid:
+      body-width: 900px
+      margin-width: 300px
+      gutter-width: 1.5rem
 
 
-
+resources:
+  - "output_data/*"
