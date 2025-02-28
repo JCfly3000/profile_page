@@ -1,0 +1,18 @@
+---
+title: "profile_page"
+---
+
+This is a Quarto website.
+
+
+# In to R
+
+# R model
+
+# In to Python
+
+# Pyhton model
+
+
+
+

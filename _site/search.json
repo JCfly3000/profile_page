@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "profile_page",
+    "section": "",
+    "text": "This is a Quarto website.\n\nIn to R\n\n\nR model\n\n\nIn to Python\n\n\nPyhton model"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "关于我.html",
+    "href": "关于我.html",
+    "title": "关于我",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "about cn.html",
+    "href": "about cn.html",
+    "title": "关于我",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  }
+]
