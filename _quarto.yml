@@ -3,15 +3,15 @@ project:
   output-dir: docs
 
 website:
-  title: "SQL handbook"
-  favicon: "SQL-Database.png"
+  title: "Tony JC Duan"
+
   navbar:
-    logo: "SQL-Database.png"
+
     left:
       - href: index.qmd
         text: Home
-      - href: code.qmd
-        text: Code
+      - href: about.qmd
+        text: about
   
       
     right:

@@ -1,5 +1,5 @@
 ---
-title: "SQL handbook"
+title: "Profile"
 ---
 
 This is a Quarto website.
