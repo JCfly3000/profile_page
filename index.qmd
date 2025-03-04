@@ -4,12 +4,19 @@ title: "profile_page"
 
 This is a Quarto website.
 
+# SQL Handbook
 
-# In to R
+https://jcfly3000.github.io/into_sql/
+
+# R Handboook
+
+https://jcfly3000.github.io/Into-R/
+
+# Python Handbook
+
+https://jcfly3000.github.io/Into-Python/
 
 # R model
-
-# In to Python
 
 # Pyhton model
 
