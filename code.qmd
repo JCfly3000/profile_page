@@ -1,0 +1,433 @@
+---
+title: "Code"
+
+author: "Tony Duan"
+
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+    
+---
+
+
+```{r}
+#| code-fold: true
+#| output: false
+# set up duckdb database
+library(DBI)
+library(tidyverse)
+library(RSQLite)
+library(connections)
+library(duckdb)
+
+mtcars=cbind(model_name = rownames(mtcars), mtcars)
+
+
+if (file.exists("my-db.duckdb")) {file.remove("my-db.duckdb")
+  }
+#con <- dbConnect(duckdb(), dbdir = "my-db.duckdb", read_only = TRUE)
+con <- dbConnect(duckdb(), dbdir = "my-db.duckdb", read_only = FALSE)
+
+dbWriteTable(con, "iris_table", iris,overwrite = TRUE)
+dbWriteTable(con, "mtcars_table", mtcars,overwrite = TRUE)
+```
+
+
+There are table `iris_table` and `mtcars_table` in duckdb `my-db.duckdb`
+
+
+# show all table
+
+```{sql}
+#| connection: con
+SHOW ALL TABLES;
+```
+
+# show column name in table
+
+```{sql}
+#| connection: con
+DESCRIBE mtcars_table;
+```
+
+# select
+
+## select top 6 and rename 
+
+```{sql}
+#| connection: con
+SELECT model_name as model,mpg,cyl from mtcars_table limit 6 ;
+```
+
+## select distinct
+
+
+all distinct record of mpg and cyl
+```{sql}
+#| connection: con
+SELECT distinct mpg,cyl from mtcars_table;
+```
+## select distinct on 
+
+all distinct record of  cyl
+
+```{sql}
+#| connection: con
+SELECT distinct on (cyl) mpg ,cyl from mtcars_table;
+```
+
+# create column
+
+
+```{sql}
+#| connection: con
+SELECT model_name as model,mpg,cyl, mpg+1 as new_mpg from mtcars_table limit 6 ;
+```
+
+
+# Filter
+
+
+```{sql}
+#| connection: con
+SELECT model_name as model,mpg,cyl from mtcars_table where mpg=21;
+```
+
+
+
+# order
+
+
+```{sql}
+#| connection: con
+SELECT model_name as model,mpg,cyl from mtcars_table order by mpg desc limit 3;
+```
+
+# group by 
+
+
+```{sql}
+#| connection: con
+SELECT model_name, sum(mpg) as total_mpg,mean(cyl) as cyl_mean from mtcars_table
+group by 1 limit 5
+;
+```
+
+
+
+# create table 
+
+## CREATE OR REPLACE
+
+allows a new table to be created or for an existing table to be overwritten by the new table. This is shorthand for dropping the existing table and then creating the new one.
+
+```{sql}
+#| connection: con
+CREATE OR REPLACE temp table mtcars_table_group as
+SELECT model_name, sum(mpg) as total_mpg,mean(cyl) as cyl_mean from mtcars_table
+group by 1
+;
+```
+
+## CREATE TABLE IF NOT EXISTS 
+
+will only proceed with the creation of the table if it does not already exist. If the table already exists, no action will be taken and the existing table will remain in the database.
+
+```{sql}
+#| connection: con
+CREATE TABLE IF NOT EXISTS  new_mtcars_table_group as
+SELECT model_name, sum(mpg) as total_mpg,mean(cyl) as cyl_mean from mtcars_table
+group by 1
+;
+```
+
+
+# unique
+
+## check unique
+
+```{sql}
+#| connection: con
+SELECT count(*),count(distinct model_name) from mtcars_table
+;
+```
+
+# join
+
+
+
+```{sql}
+#| connection: con
+SELECT  * from mtcars_table_group t1 ;
+```
+
+
+## left join 
+
+
+```{sql}
+#| connection: con
+SELECT t1.model_name,t1.mpg ,t1.cyl,t2.* from mtcars_table t1 
+left join mtcars_table_group t2 on t1.model_name = t2.model_name
+limit 5
+;
+```
+
+## inter join
+
+```{sql}
+#| connection: con
+SELECT t1.model_name,t1.mpg ,t1.cyl,t2.* from mtcars_table t1 
+inner join (select * from mtcars_table_group limit 5) t2 on t1.model_name = t2.model_name
+;
+```
+
+
+
+
+
+
+
+# append rows
+
+
+## append without duplicate elimination `union`
+
+```{sql}
+#| connection: con
+SELECT count(*) from mtcars_table
+;
+```
+
+
+```{sql}
+#| connection: con
+CREATE temp table double_mtcars_table as
+SELECT * from mtcars_table 
+union all
+SELECT * from mtcars_table 
+;
+```
+
+
+```{sql}
+#| connection: con
+SELECT count(*) from double_mtcars_table
+;
+```
+
+
+## append with duplicate elimination `union all`
+```{sql}
+#| connection: con
+SELECT count(*) from mtcars_table
+;
+```
+
+
+```{sql}
+#| connection: con
+CREATE OR REPLACE temp table double_mtcars_table as
+SELECT * from mtcars_table 
+union all
+SELECT * from mtcars_table 
+;
+```
+
+
+```{sql}
+#| connection: con
+SELECT count(*) from double_mtcars_table
+;
+```
+
+```{sql}
+#| connection: con 
+select count(*) from (
+SELECT distinct * from double_mtcars_table
+)
+;
+```
+
+
+
+# delete rows
+
+
+```{sql}
+#| connection: con
+DELETE FROM mtcars_table WHERE model_name = 'Mazda RX4';
+;
+```
+
+```{sql}
+#| connection: con
+select count(*) from mtcars_table
+;
+```
+
+# update rows
+
+```{sql}
+#| connection: con
+select model_name,mpg  from mtcars_table where model_name= 'Mazda RX4'
+;
+```
+
+```{sql}
+#| connection: con
+UPDATE mtcars_table
+SET mpg = 999
+WHERE model_name= 'Mazda RX4'
+;
+```
+
+
+```{sql}
+#| connection: con
+select model_name,mpg from mtcars_table where model_name= 'Mazda RX4'
+;
+```
+
+# drop table
+
+
+Before drop
+
+```{sql}
+#| connection: con
+SHOW ALL TABLES;
+```
+
+dropping
+
+```{sql}
+#| connection: con
+DROP table IF EXISTS mtcars_table_group;
+```
+
+after drop
+
+```{sql}
+#| connection: con
+SHOW ALL TABLES;
+```
+
+
+# PIVOT
+
+
+long to wide
+
+
+```{sql}
+#| connection: con
+DROP table IF EXISTS cities;
+
+CREATE temp TABLE  cities (
+    country VARCHAR, name VARCHAR, year INTEGER, population INTEGER
+);
+INSERT INTO cities VALUES
+    ('NL', 'Amsterdam', 2000, 1005),
+    ('NL', 'Amsterdam', 2010, 1065),
+    ('NL', 'Amsterdam', 2020, 1158),
+    ('US', 'Seattle', 2000, 564),
+    ('US', 'Seattle', 2010, 608),
+    ('US', 'Seattle', 2020, 738),
+    ('US', 'New York City', 2000, 8015),
+    ('US', 'New York City', 2010, 8175),
+    ('US', 'New York City', 2020, 8772);
+```
+
+```{sql}
+#| connection: con
+SELECT *
+FROM cities;
+```
+
+
+## PIVOT on one column
+```{sql}
+#| connection: con
+PIVOT cities
+ON year
+USING sum(population)
+GROUP BY country;
+```
+
+## PIVOT on two column
+```{sql}
+#| connection: con
+PIVOT cities
+ON country, name
+USING sum(population);
+```
+
+
+# unpivot
+
+wide to long
+
+
+```{sql}
+#| connection: con
+UNPIVOT
+(
+PIVOT cities
+ON year
+USING sum(population)
+GROUP BY country
+)
+ON COLUMNS(* EXCLUDE (country))
+INTO
+    NAME year
+    VALUE population;
+;
+```
+
+
+# EXPLAIN
+
+
+
+```{sql}
+#| connection: con
+EXPLAIN 
+SELECT t1.model_name,t1.mpg ,t1.cyl,t2.* from mtcars_table t1 
+inner join (select * from mtcars_table limit 5) t2 on t1.model_name = t2.model_name
+;
+```
+
+```{sql}
+#| connection: con
+EXPLAIN ANALYZE 
+SELECT t1.model_name,t1.mpg ,t1.cyl,t2.* from mtcars_table t1 
+inner join (select * from mtcars_table limit 5) t2 on t1.model_name = t2.model_name
+;
+```
+
+
+
+```{r}
+dbDisconnect(con, shutdown=TRUE)
+```
+
+
+# reference:
+
+https://duckdb.org/docs/stable/clients/r.html
+
+
+https://duckdb.org/docs/stable/sql/statements
+
+
+
