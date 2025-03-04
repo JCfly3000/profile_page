@@ -3,13 +3,16 @@ project:
   output-dir: docs
 
 website:
-  title: "Tony Jinchao Duan"
+  title: "SQL handbook"
+  favicon: "SQL-Database.png"
   navbar:
+    logo: "SQL-Database.png"
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
-      - about cn.qmd
+      - href: code.qmd
+        text: Code
+  
       
     right:
       - text: "中文"
@@ -32,3 +35,6 @@ format:
 
 resources:
   - "output_data/*"
+
+filters:
+  - foldableCodeBlcok.lua
