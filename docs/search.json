@@ -1,94 +1,10 @@
 [
   {
-    "objectID": "code.html",
-    "href": "code.html",
-    "title": "Code",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Profile",
     "section": "",
-    "text": "Code\n# set up duckdb database\nlibrary(DBI)\nlibrary(tidyverse)\nlibrary(RSQLite)\nlibrary(connections)\nlibrary(duckdb)\n\nmtcars=cbind(model_name = rownames(mtcars), mtcars)\n\n\nif (file.exists(\"my-db.duckdb\")) {file.remove(\"my-db.duckdb\")\n  }\n#con &lt;- dbConnect(duckdb(), dbdir = \"my-db.duckdb\", read_only = TRUE)\ncon &lt;- dbConnect(duckdb(), dbdir = \"my-db.duckdb\", read_only = FALSE)\n\ndbWriteTable(con, \"iris_table\", iris,overwrite = TRUE)\ndbWriteTable(con, \"mtcars_table\", mtcars,overwrite = TRUE)\nThere are table iris_table and mtcars_table in duckdb my-db.duckdb"
-  },
-  {
-    "objectID": "code.html#create-or-replace",
-    "href": "code.html#create-or-replace",
-    "title": "Code",
-    "section": "8.1 CREATE OR REPLACE",
-    "text": "8.1 CREATE OR REPLACE\nallows a new table to be created or for an existing table to be overwritten by the new table. This is shorthand for dropping the existing table and then creating the new one.\n\n\nCode\nCREATE OR REPLACE temp table mtcars_table_group as\nSELECT model_name, sum(mpg) as total_mpg,mean(cyl) as cyl_mean from mtcars_table\ngroup by 1\n;"
-  },
-  {
-    "objectID": "code.html#create-table-if-not-exists",
-    "href": "code.html#create-table-if-not-exists",
-    "title": "Code",
-    "section": "8.2 CREATE TABLE IF NOT EXISTS",
-    "text": "8.2 CREATE TABLE IF NOT EXISTS\nwill only proceed with the creation of the table if it does not already exist. If the table already exists, no action will be taken and the existing table will remain in the database.\n\n\nCode\nCREATE TABLE IF NOT EXISTS  new_mtcars_table_group as\nSELECT model_name, sum(mpg) as total_mpg,mean(cyl) as cyl_mean from mtcars_table\ngroup by 1\n;"
-  },
-  {
-    "objectID": "code.html#left-join",
-    "href": "code.html#left-join",
-    "title": "Code",
-    "section": "10.1 left join",
-    "text": "10.1 left join\n\n\nCode\nSELECT t1.model_name,t1.mpg ,t1.cyl,t2.* from mtcars_table t1 \nleft join mtcars_table_group t2 on t1.model_name = t2.model_name\nlimit 5\n;\n\n\n\n5 records\n\n\nmodel_name\nmpg\ncyl\nmodel_name\ntotal_mpg\ncyl_mean\n\n\n\n\nMazda RX4\n21.0\n6\nMazda RX4\n21.0\n6\n\n\nMazda RX4 Wag\n21.0\n6\nMazda RX4 Wag\n21.0\n6\n\n\nDatsun 710\n22.8\n4\nDatsun 710\n22.8\n4\n\n\nHornet 4 Drive\n21.4\n6\nHornet 4 Drive\n21.4\n6\n\n\nHornet Sportabout\n18.7\n8\nHornet Sportabout\n18.7\n8"
-  },
-  {
-    "objectID": "code.html#right-join",
-    "href": "code.html#right-join",
-    "title": "Code",
-    "section": "right join",
-    "text": "right join"
-  },
-  {
-    "objectID": "code.html#inter-join",
-    "href": "code.html#inter-join",
-    "title": "Code",
-    "section": "10.2 inter join",
-    "text": "10.2 inter join\n\n\nCode\nSELECT t1.model_name,t1.mpg ,t1.cyl,t2.* from mtcars_table t1 \ninner join (select * from mtcars_table_group limit 5) t2 on t1.model_name = t2.model_name\n;\n\n\n\n5 records\n\n\nmodel_name\nmpg\ncyl\nmodel_name\ntotal_mpg\ncyl_mean\n\n\n\n\nMazda RX4 Wag\n21.0\n6\nMazda RX4 Wag\n21.0\n6\n\n\nHornet 4 Drive\n21.4\n6\nHornet 4 Drive\n21.4\n6\n\n\nMerc 230\n22.8\n4\nMerc 230\n22.8\n4\n\n\nMerc 450SE\n16.4\n8\nMerc 450SE\n16.4\n8\n\n\nPontiac Firebird\n19.2\n8\nPontiac Firebird\n19.2\n8"
-  },
-  {
-    "objectID": "code.html#select-top-6-and-rename",
-    "href": "code.html#select-top-6-and-rename",
-    "title": "Code",
-    "section": "3.1 select top 6 and rename",
-    "text": "3.1 select top 6 and rename\n\n\nCode\nSELECT model_name as model,mpg,cyl from mtcars_table limit 6 ;\n\n\n\n6 records\n\n\nmodel\nmpg\ncyl\n\n\n\n\nMazda RX4\n21.0\n6\n\n\nMazda RX4 Wag\n21.0\n6\n\n\nDatsun 710\n22.8\n4\n\n\nHornet 4 Drive\n21.4\n6\n\n\nHornet Sportabout\n18.7\n8\n\n\nValiant\n18.1\n6"
-  },
-  {
-    "objectID": "code.html#select-distinct",
-    "href": "code.html#select-distinct",
-    "title": "Code",
-    "section": "3.2 select distinct",
-    "text": "3.2 select distinct\nall distinct record of mpg and cyl ::: {.cell}\n\nCode\nSELECT distinct mpg,cyl from mtcars_table;\n\n\n\nDisplaying records 1 - 10\n\n\nmpg\ncyl\n\n\n\n\n22.8\n4\n\n\n18.1\n6\n\n\n14.3\n8\n\n\n17.8\n6\n\n\n32.4\n4\n\n\n21.5\n4\n\n\n15.8\n8\n\n\n18.7\n8\n\n\n17.3\n8\n\n\n30.4\n4\n\n\n\n\n::: ## select distinct on\nall distinct record of cyl\n\n\nCode\nSELECT distinct on (cyl) mpg ,cyl from mtcars_table;\n\n\n\n3 records\n\n\nmpg\ncyl\n\n\n\n\n21.0\n6\n\n\n18.7\n8\n\n\n22.8\n4"
-  },
-  {
-    "objectID": "code.html#check-unique",
-    "href": "code.html#check-unique",
-    "title": "Code",
-    "section": "9.1 check unique",
-    "text": "9.1 check unique\n\n\nCode\nSELECT count(*),count(distinct model_name) from mtcars_table\n;\n\n\n\n1 records\n\n\ncount_star()\ncount(DISTINCT model_name)\n\n\n\n\n32\n32"
-  },
-  {
-    "objectID": "code.html#append-without-duplicate-elimination-union",
-    "href": "code.html#append-without-duplicate-elimination-union",
-    "title": "Code",
-    "section": "11.1 append without duplicate elimination union",
-    "text": "11.1 append without duplicate elimination union\n\n\nCode\nSELECT count(*) from mtcars_table\n;\n\n\n\n1 records\n\n\ncount_star()\n\n\n\n\n32\n\n\n\n\n\n\n\nCode\nCREATE temp table double_mtcars_table as\nSELECT * from mtcars_table \nunion all\nSELECT * from mtcars_table \n;\n\n\n\n\nCode\nSELECT count(*) from double_mtcars_table\n;\n\n\n\n1 records\n\n\ncount_star()\n\n\n\n\n64"
-  },
-  {
-    "objectID": "code.html#append-with-duplicate-elimination-union-all",
-    "href": "code.html#append-with-duplicate-elimination-union-all",
-    "title": "Code",
-    "section": "11.2 append with duplicate elimination union all",
-    "text": "11.2 append with duplicate elimination union all\n\n\nCode\nSELECT count(*) from mtcars_table\n;\n\n\n\n1 records\n\n\ncount_star()\n\n\n\n\n32\n\n\n\n\n\n\n\nCode\nCREATE OR REPLACE temp table double_mtcars_table as\nSELECT * from mtcars_table \nunion all\nSELECT * from mtcars_table \n;\n\n\n\n\nCode\nSELECT count(*) from double_mtcars_table\n;\n\n\n\n1 records\n\n\ncount_star()\n\n\n\n\n64\n\n\n\n\n\n\n\nCode\nselect count(*) from (\nSELECT distinct * from double_mtcars_table\n)\n;\n\n\n\n1 records\n\n\ncount_star()\n\n\n\n\n32"
-  },
-  {
-    "objectID": "code.html#pivot-on-one-column",
-    "href": "code.html#pivot-on-one-column",
-    "title": "Code",
-    "section": "15.1 PIVOT on one column",
-    "text": "15.1 PIVOT on one column\n\n\nCode\nPIVOT cities\nON year\nUSING sum(population)\nGROUP BY country;\n\n\n\n2 records\n\n\ncountry\n2000\n2010\n2020\n\n\n\n\nUS\n8579\n8783\n9510\n\n\nNL\n1005\n1065\n1158"
-  },
-  {
-    "objectID": "code.html#pivot-on-two-column",
-    "href": "code.html#pivot-on-two-column",
-    "title": "Code",
-    "section": "15.2 PIVOT on two column",
-    "text": "15.2 PIVOT on two column\n\n\nCode\nPIVOT cities\nON country, name\nUSING sum(population);\n\n\n\n3 records\n\n\n\n\n\n\n\n\n\n\n\nyear\nNL_Amsterdam\nNL_New York City\nNL_Seattle\nUS_Amsterdam\nUS_New York City\nUS_Seattle\n\n\n\n\n2000\n1005\nNA\nNA\nNA\n8015\n564\n\n\n2010\n1065\nNA\nNA\nNA\n8175\n608\n\n\n2020\n1158\nNA\nNA\nNA\n8772\n738"
+    "text": "This is a Quarto website.\n\nSQL Handbook\nhttps://jcfly3000.github.io/into_sql/\n\n\nR Handboook\nhttps://jcfly3000.github.io/Into-R/\n\n\nPython Handbook\nhttps://jcfly3000.github.io/Into-Python/\n\n\nR model\n\n\nPyhton model"
   },
   {
     "objectID": "about.html",
@@ -96,23 +12,5 @@
     "title": "About",
     "section": "",
     "text": "About this site\n\n1 + 1\n\n[1] 2"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "SQL handbook",
-    "section": "",
-<<<<<<< HEAD
-    "text": "This is a Quarto website.\n\nSQL Handbook\nhttps://jcfly3000.github.io/into_sql/\n\n\nR Handboook\nhttps://jcfly3000.github.io/Into-R/\n\n\nPython Handbook\nhttps://jcfly3000.github.io/Into-Python/\n\n\nR model\n\n\nPyhton model"
-  },
-  {
-    "objectID": "about cn.html",
-    "href": "about cn.html",
-    "title": "关于我",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
-=======
-    "text": "This is a Quarto website.\n\nIn to R\n\n\nR model\n\n\nIn to Python\n\n\nPyhton model"
->>>>>>> 6ef1f8416ff5c61b440c834516ce9d1fe04f623b
   }
 ]
