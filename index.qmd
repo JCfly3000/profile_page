@@ -1,24 +1,28 @@
 ---
-title: "Profile"
+title: ""
 ---
 
-This is a Quarto website.
 
-# SQL Handbook
+# [SQL Handbook](https://jcfly3000.github.io/into_sql/)
 
-https://jcfly3000.github.io/into_sql/
 
-# R Handboook
+# [R Handboook](https://jcfly3000.github.io/Into-R/)
 
-https://jcfly3000.github.io/Into-R/
 
-# Python Handbook
 
-https://jcfly3000.github.io/Into-Python/
+# [Python Handbook](https://jcfly3000.github.io/Into-Python/)
 
-# R model
+  
 
-# Pyhton model
+# [R model]
+
+# [Pyhton model]
+
+Email:TonyJCing@outlook.com
+
+
+
+
 
 
 
